@@ -4,6 +4,33 @@
   
   
   <entry>
+    <title>Qt程序发布方法</title>
+    <link href="/2022/06/24/qt-release/"/>
+    <url>/2022/06/24/qt-release/</url>
+    
+    <content type="html"><![CDATA[<h1 id="1-目录形式发布程序"><a href="#1-目录形式发布程序" class="headerlink" title="1. 目录形式发布程序"></a>1. 目录形式发布程序</h1><p>如下左图所示，工程选择Release配置构建运行一次，然后在编译目录下找到release目录，将生成的<strong>xxx.exe</strong>程序拷贝出来，放到到一空文件夹下；</p><p>如下右图打开Qt自带的命令行工具，进入<strong>xxx.exe</strong>所在目录下，执行 <strong>windeployqt  xxx.exe</strong>。</p><p><img src='https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220624220122019.png' align='left'/><img src='https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220624220719807.png' align='left'/></p><p><img src="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220624222440075.png" alt="image-20220624222440075"></p><p>windeployqt工具将程序所依赖的.dll文件全部复制到当前目录下，执行完成后，本目录便可作为程序正式包发布。</p><p><img src="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220624223018699.png" alt="image-20220624223018699"></p><h1 id="2-文件形式发布程序"><a href="#2-文件形式发布程序" class="headerlink" title="2. 文件形式发布程序"></a>2. 文件形式发布程序</h1><blockquote><p>上述程序发布有个不好的地方，用户意外删除目录下一个dll文件后，将导致程序无法运行。可采用《Enigma Virtual Box》封包工具打包成单个exe文件发布。</p></blockquote><p><img src="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220624224524634.png" alt="image-20220624224524634"></p><ol><li>请选择待封包的主程序：选择<strong>xxx.exe</strong>程序</li><li>封包程序另存：封包后生成的exe程序</li><li>增加-&gt;文件夹(递归)：选择 xxx.exe 和 dll 依赖文件所在目录</li></ol><p>打包前 xxx 目录大小为 65.3MB, 封包后生成的 xxx_boxed.exe 大小为 66.7MB</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>GUI界面开发</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Qt</tag>
+      
+      <tag>GUI</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>如何优雅的提交commit</title>
     <link href="/2022/05/15/git-commitizen/"/>
     <url>/2022/05/15/git-commitizen/</url>
