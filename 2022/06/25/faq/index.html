@@ -16,28 +16,22 @@
   <meta name="author" content="SeeDeer">
   <meta name="keywords" content="">
   
-    <meta name="description" content="本文提供两种 Windows 下Qt程序打包发布的方法。">
+    <meta name="description" content="收录一些值得收录的技术问题解决思路。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Qt程序发布方法">
-<meta property="og:url" content="http://example.com/2022/06/24/qt-release/index.html">
+<meta property="og:title" content="faq">
+<meta property="og:url" content="http://example.com/2022/06/25/faq/index.html">
 <meta property="og:site_name" content="SeeDeer的博客">
-<meta property="og:description" content="本文提供两种 Windows 下Qt程序打包发布的方法。">
+<meta property="og:description" content="收录一些值得收录的技术问题解决思路。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220624220122019.png">
-<meta property="og:image" content="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220624220719807.png">
-<meta property="og:image" content="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220624222440075.png">
-<meta property="og:image" content="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220624223018699.png">
-<meta property="og:image" content="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220624224524634.png">
-<meta property="article:published_time" content="2022-06-24T13:50:09.000Z">
-<meta property="article:modified_time" content="2022-06-24T14:55:57.008Z">
+<meta property="article:published_time" content="2022-06-25T01:50:01.000Z">
+<meta property="article:modified_time" content="2022-06-25T03:17:21.710Z">
 <meta property="article:author" content="SeeDeer">
-<meta property="article:tag" content="Qt">
-<meta property="article:tag" content="GUI">
+<meta property="article:tag" content="fopen">
+<meta property="article:tag" content="LR&#x2F;CRLF">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220624220122019.png">
   
   
-  <title>Qt程序发布方法 - SeeDeer的博客</title>
+  <title>faq - SeeDeer的博客</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
 
@@ -183,7 +177,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="Qt程序发布方法">
+            <span class="h2" id="subtitle" title="faq">
               
             </span>
 
@@ -193,8 +187,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2022-06-24 21:50" pubdate>
-        2022年6月24日 晚上
+      <time datetime="2022-06-25 09:50" pubdate>
+        2022年6月25日 上午
       </time>
     </span>
   
@@ -204,7 +198,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      408 字
+      1.6k 字
     </span>
   
 
@@ -213,7 +207,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      4 分钟
+      14 分钟
     </span>
   
 
@@ -242,25 +236,32 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Qt程序发布方法</h1>
+            <h1 style="display: none">faq</h1>
             
             <div class="markdown-body">
-              <h1 id="1-目录形式发布程序"><a href="#1-目录形式发布程序" class="headerlink" title="1. 目录形式发布程序"></a>1. 目录形式发布程序</h1><p>如下左图所示，工程选择Release配置构建运行一次，然后在编译目录下找到release目录，将生成的<strong>xxx.exe</strong>程序拷贝出来，放到到一空文件夹下；</p>
-<p>如下右图打开Qt自带的命令行工具，进入<strong>xxx.exe</strong>所在目录下，执行 <strong>windeployqt  xxx.exe</strong>。</p>
-<p><img src='https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220624220122019.png' align='left'/><img src='https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220624220719807.png' align='left'/></p>
-<p><img src="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220624222440075.png" srcset="/img/loading.gif" lazyload alt="image-20220624222440075"></p>
-<p>windeployqt工具将程序所依赖的.dll文件全部复制到当前目录下，执行完成后，本目录便可作为程序正式包发布。</p>
-<p><img src="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220624223018699.png" srcset="/img/loading.gif" lazyload alt="image-20220624223018699"></p>
-<h1 id="2-文件形式发布程序"><a href="#2-文件形式发布程序" class="headerlink" title="2. 文件形式发布程序"></a>2. 文件形式发布程序</h1><blockquote>
-<p>上述程序发布有个不好的地方，用户意外删除目录下一个dll文件后，将导致程序无法运行。可采用《Enigma Virtual Box》封包工具打包成单个exe文件发布。</p>
-</blockquote>
-<p><img src="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220624224524634.png" srcset="/img/loading.gif" lazyload alt="image-20220624224524634"></p>
+              <h1 id="1-文件管理"><a href="#1-文件管理" class="headerlink" title="1. 文件管理"></a>1. 文件管理</h1><h2 id="1-1-ftell-fread接口Windows下表现异常"><a href="#1-1-ftell-fread接口Windows下表现异常" class="headerlink" title="1.1 ftell fread接口Windows下表现异常"></a>1.1 ftell fread接口Windows下表现异常</h2><ul>
+<li><p><strong>问题背景</strong>：采用 fopen 类接口编写了一段文件内容解析代码，其中会采用 ftell、fseek 获取和修改文件偏移地址；Linux环境代码运行没问题，但到了 Windows环境下ftell接口返回有一处出错，但换个文件又不会出错了，具有偶发性。</p>
+</li>
+<li><p><strong>知识点</strong>：Windows下编辑器文本文件默认采用CRLF换行符，Linux下默认为LF换行符。本文测试的文本文件采用CRLF换行，0x0d 0x0a</p>
+</li>
+<li><p><strong>测试代码</strong>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></div></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdint.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span> **argv)</span><br>&#123;<br>    <span class="hljs-type">char</span> *file_name = argv[<span class="hljs-number">1</span>];<br><br>    FILE *fp = fopen(file_name,<span class="hljs-string">&quot;r&quot;</span>);<br>    <span class="hljs-keyword">if</span> (fp == <span class="hljs-literal">NULL</span>) &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>    &#125;<br>    <br>    <span class="hljs-type">uint8_t</span> bufz[<span class="hljs-number">16</span>];<br>    <span class="hljs-keyword">while</span> (!feof(fp)) &#123;<br>        <span class="hljs-type">int</span> ret = fread(bufz,<span class="hljs-number">1</span>,<span class="hljs-keyword">sizeof</span>(bufz),fp);<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;current offset: %ld, &quot;</span>,ftell(fp));<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;ret:%d [&quot;</span>,ret);<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; ret; i++) &#123;<br>            <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%02x &quot;</span>,bufz[i]);<br>        &#125;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;]\n&quot;</span>);<br>    &#125;<br>    <br>    fclose(fp);<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>测试结果</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs te">// 文件内容的二进制显示<br>00000000  54 68 69 73 20 69 73 20  61 20 41 6c 69 6e 65 0d  |This is a Aline.|<br>00000010  0a 54 68 69 73 20 69 73  20 61 20 42 6c 69 6e 65  |.This is a Bline|<br>00000020<br><br>// Windows fopen(&quot;r&quot;)<br>current offset: 0<br>current offset: 17, ret:16 [54 68 69 73 20 69 73 20 61 20 41 6c 69 6e 65 0a ]<br>current offset: 32, ret:15 [54 68 69 73 20 69 73 20 61 20 42 6c 69 6e 65 ]<br><br>// Linux<br>current offset: 16, ret:16 [54 68 69 73 20 69 73 20 61 20 41 6c 69 6e 65 0d ]<br>current offset: 32, ret:16 [0a 54 68 69 73 20 69 73 20 61 20 42 6c 69 6e 65 ]<br>current offset: 32, ret:0 []<br></code></pre></td></tr></table></figure>
+
 <ol>
-<li>请选择待封包的主程序：选择<strong>xxx.exe</strong>程序</li>
-<li>封包程序另存：封包后生成的exe程序</li>
-<li>增加-&gt;文件夹(递归)：选择 xxx.exe 和 dll 依赖文件所在目录</li>
+<li>对于Windows下，fread 接口读取文件遇到 \r(0x0d)认为是换行符，0x0d不返回到用户，然后继续读取满16字节返回；</li>
+<li>对于Linux下，fread 接口没有Linux下这种骚操作，一切正常。</li>
 </ol>
-<p>打包前 xxx 目录大小为 65.3MB, 封包后生成的 xxx_boxed.exe 大小为 66.7MB</p>
+</li>
+<li><p><strong>问题解决</strong>：</p>
+<p>以二进制形式打开文件操作，便可解决问题！fopen(file_name,”rb”);</p>
+<figure class="highlight tex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs tex">// Windows fopen(&quot;rb&quot;)<br>current offset: 16, ret:16 [54 68 69 73 20 69 73 20 61 20 41 6c 69 6e 65 0d ]<br>current offset: 32, ret:16 [0a 54 68 69 73 20 69 73 20 61 20 42 6c 69 6e 65 ]<br>current offset: 32, ret:0 []<br></code></pre></td></tr></table></figure>
+
+<p>fopen类文件流接口来自C标准库，差异性源头在于Windows和Linux下编译时所采用的libc库不同，实现也有差异！</p>
+</li>
+</ul>
 
             </div>
             <hr>
@@ -270,7 +271,7 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/GUI%E7%95%8C%E9%9D%A2%E5%BC%80%E5%8F%91/">GUI界面开发</a>
+                      <a class="hover-with-bg" href="/categories/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/">常见问题</a>
                     
                   </div>
                 
@@ -278,9 +279,9 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/Qt/">Qt</a>
+                      <a class="hover-with-bg" href="/tags/fopen/">fopen</a>
                     
-                      <a class="hover-with-bg" href="/tags/GUI/">GUI</a>
+                      <a class="hover-with-bg" href="/tags/LR-CRLF/">LR/CRLF</a>
                     
                   </div>
                 
@@ -297,18 +298,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/06/25/faq/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">faq</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/05/15/git-commitizen/">
-                        <span class="hidden-mobile">如何优雅的提交commit</span>
+                      <a href="/2022/06/24/qt-release/">
+                        <span class="hidden-mobile">Qt程序发布方法</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
