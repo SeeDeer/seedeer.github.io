@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  
+  
+  
+  <entry>
+    <title>μC/OS-III(基础篇)</title>
+    <link href="/2023/04/09/ucosiii/"/>
+    <url>/2023/04/09/ucosiii/</url>
+    
+    <content type="html"><![CDATA[<h1 id="1-发展历史"><a href="#1-发展历史" class="headerlink" title="1. 发展历史"></a>1. 发展历史</h1><p>​    想深入了解它，必先了解它是如何诞生的。μC&#x2F;OS英文全称 Micro-Controller Operating Systems，是一款实时操作系统，Jean J. Labrosse 于1991年设计出来，是一种<strong>基于优先级的抢占式内核</strong>，用C语言编写，主要用于嵌入式系统。</p><p>​    Jean J. Labrosse 最初是Micrium, Inc公司的一员，开发了商业版本μC&#x2F;OS-II和μC&#x2F;OS-III。</p><p>​    2016年，Micrium, Inc. 被 Silicon Laboratories收购，随后μC&#x2F;OS在Apache许可下作为开源软件发布。Silicon Labs 继续维护一个名为 Micrium OS 的开源产品用于他们自己的芯片。一群前 Micrium, Inc. 员工（包括 Labrosse）为 μC&#x2F;OS 和 Cesium RTOS 提供咨询和支持，这是一个专有分支是在开源发布之后制作的。</p><p>​    <strong>Cesium RTOS</strong> 是一个全功能的嵌入式操作系统(包含μC&#x2F;OS、uC-TCP-IP、uC-FS等)，最初是从 Micrium µC&#x2F;OS 派生出来的。代码库由 Weston Embedded Solutions 严格开发和维护。它支持 TCP&#x2F;IP、USB 主机&#x2F;设备和 Modbus， 以及强大的文件系统。</p><p>​    Cesium RTOS 的核心是μC&#x2F;OS-II和μC&#x2F;OS-III实时内核；用于微处理器、微控制器和 DSP 的高度便携、可扩展、抢占式、实时、确定性、多任务内核。</p><p>​    <strong>μC&#x2F;OS 与 Cesium RTOS 区别？</strong>μC&#x2F;OS只是一个操作系统内核，归属于Cesium RTOS；Cesium RTOS除了含有μC&#x2F;OS还有其他功能组件，如uC-TCP-IP、uC-FS等。本文主要针对于μC&#x2F;OS-III操作系统内核进行介绍。</p><p>​    μC&#x2F;OS-III 于2009年推出，提供了μC&#x2F;OS-II 的所有特性和功能。最大的区别是支持的任务数量。对于最多 255 个任务，μC&#x2F;OS-II 只允许 255 个优先级中的每一个有 1 个任务。μC&#x2F;OS-III 允许任意数量的应用程序任务、优先级和每个级别的任务，仅受处理器对内存的访问限制。</p><h1 id="2-许可协议"><a href="#2-许可协议" class="headerlink" title="2. 许可协议"></a>2. 许可协议</h1><p>​    μC&#x2F;OS-III 采用 Apache Licence 2.0许可协议：鼓励代码共享，允许代码修改，作为开源或商业软件再发布；但需要尊重代码作者的著作权。</p><h1 id="3-移植篇"><a href="#3-移植篇" class="headerlink" title="3. 移植篇"></a>3. 移植篇</h1><p>​    μC&#x2F;OS-III的移植需要 <a href="https://github.com/weston-embedded/uC-OS3">uC-OS3</a> 、<a href="https://github.com/weston-embedded/uC-CPU">uC-CPU</a>、<a href="https://github.com/weston-embedded/uC-LIB">uC-LIB</a> 三个组件，具体移植思想后续更新。</p><p>​    移植后工程代码：<a href="https://github.com/SeeDeer/stm32f746zg_project/commits/v1.0.0">https://github.com/SeeDeer/stm32f746zg_project/commits/v1.0.0</a></p><p>​    可参考提交的commit，清晰的了解移植过程中修改了哪些文件。</p><p>​    </p><p>​    </p><p>​    </p>]]></content>
+    
+    
+    <categories>
+      
+      <category>操作系统</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>μC/OS-II</tag>
+      
+      <tag>μC/OS-III</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>SigMesh网络的基础知识</title>
+    <link href="/2022/08/14/sigmesh-base/"/>
+    <url>/2022/08/14/sigmesh-base/</url>
+    
+    <content type="html"><![CDATA[<h1 id="1-功能概述"><a href="#1-功能概述" class="headerlink" title="1. 功能概述"></a>1. 功能概述</h1><p>​    SigMesh 是基于低功耗蓝牙(BLE)基础之上的一种mesh网络应用层协议，数据链路层直接复用BLE的链路层，未做任何修改。对于一般的mesh网络来说，要解决的问题有以下几种：</p><ol><li>mesh网络的管理：节点如何加入网络？如何离开网络？可管理最大节点数量？低功耗节点的支持 ？</li><li>节点间消息的传递：<ul><li>节点间一对一的传输（单播）？  节点间一对多的传输（组播）？</li><li>消息传输延迟，如何寻求最佳路径？</li><li>可稳定传递消息的mesh网络最大距离 ？</li><li>如何保证消息的可靠到达？</li><li>单包消息可承载的应用报文大小 ？组包和分包的处理机制及可靠性？</li></ul></li><li>mesh网络的安全机制保障 ？</li></ol><p>SigMesh网络标准基于泛洪网络的机制实现，使用了BLE链路层的广播通道来传递消息，信号范围内其他节点都可接收到消息，并进行中继转发，以扩大消息传递范围。在本规范的未来修订版中，可能会考虑添加路由功能和定义基于路由的网状网络的增强功能。</p><ul><li><p><strong>网络风暴</strong>：当网络节点数量不断增大时，如果任由消息的不断中继，将会使得整个网络带宽阻塞，正常消息传递无法响应；引发网络风暴，mesh网络瘫痪 ！</p></li><li><p><strong>消息中继</strong>：Sigmesh网络目前提供了两种方式来限制泛洪网络中消息的无限制中继，消息缓存和消息最大中继次数(TTL值)。</p><ul><li><strong>网络消息缓存：</strong>在通过将所有消息添加到缓存列表来防止设备中继以前接收到的消息。 收到消息时，会根据列表检查它，如果已经存在则忽略它。 如果尚未收到，则将其添加到缓存中，以便将来可以忽略。 为防止此列表变得过长，缓存的消息数量受实现限制。</li><li><strong>TTL：</strong>每条消息都包含一个生存时间 (TTL) 值，该值限制了一条消息可以被中继的次数。 每次设备接收到消息然后中继（最多 126 次）时，TTL 值减 1。</li></ul></li><li><p><strong>通信支持</strong>：现存的一些BLE设备可能不支持通过广播处理mesh消息，为了能在不升级软硬件的基础上，无缝接入mesh网络，mesh网络提供了GATT承载层的支持，可供此类设备接入，比如手机、平板等。</p></li><li><p><strong>低功耗</strong>：低功耗节点的控制报文处理通过与具备朋友特性节点建立友谊来实现。</p></li><li><p><strong>节点入网</strong>：Provisioner负责mesh网络中节点的添加和删除，Provisioning协议可通过广播承载或GATT承载实现。理论上每个节点都可作为Provisioner。</p></li></ul><h1 id="2-节点的特性"><a href="#2-节点的特性" class="headerlink" title="2. 节点的特性"></a>2. 节点的特性</h1><p>​    Sigmesh网络中节点除了拥有最基本的消息发送和接收功能，还有一些可选的额外功能。</p><ol><li>朋友（Friend）：缓存低功耗节点未处理的消息，低功耗节点唤醒后可获取处理；节点启用朋友功能后，且与低功耗节点建立友谊关系后，便成为一个朋友节点。</li><li>中继（Relay）：基于广播承载层，接收和转发mesh消息的能力，以扩大网络传输范围。</li><li>代理（Proxy）：基于GATT承载和广播承载之间，接收和转发mesh消息的能力。</li><li>低功耗（Low Power）：采用电池供电的节点，不会一直处于工作状态；需要接收消息时，与具备朋友能力的节点一起使用时，才能显著降低功耗。</li></ol><h1 id="3-网络拓扑"><a href="#3-网络拓扑" class="headerlink" title="3. 网络拓扑"></a>3. 网络拓扑</h1><p><img src="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220819104444105.png" alt="mesh网络拓扑"></p><p>Figure shows three Relay nodes: Q, R, and S. </p><p>The three nodes that support the Friend feature are N, O, and P, however N does not have any friendships; therefore only O and P are Friend nodes. </p><p>There are five Low Power nodes: I, J, K, L, and M. Nodes I, J, and K have P as their friend, while L and M have O as their friend. </p><p>Node T is only connected to the mesh network using a GATT bearer; <strong>therefore S must relay all messages to and from T</strong>.  </p><p>For example, if a message is to be sent from T to L, then T will send the message to node S using the GATT bearer. Node S will retransmit this message using the advertising bearer. Nodes H, R, N, and O are within radio range of node S; therefore they will receive this message. Node O, being the friend of node L will store the message, and if the message was a segmented message, node O will respond with an acknowledgment at the lower transport layer. Sometime later, L will poll node O to check for new messages, such that O will forward the message originally sent by T to L.  </p><h1 id="4-相关概念"><a href="#4-相关概念" class="headerlink" title="4. 相关概念"></a>4. 相关概念</h1><p>为更好的描述Sigmesh网络的功能和机制，Mesh标准定义了几种不同的概念；状态(states)、消息(messages)、绑定(bindings)、元素(Elements)、addressing, models, publish-subscribe, mesh keys, and associations.  </p><ul><li><p>状态(states)：A state is a value representing a condition of an element.</p></li><li><p>Bound states ：节点内部或节点之间的一个状态联动机制，比如开关节点的开关状态联动灯节点的亮灭状态。</p></li><li><p>消息(messages)：mesh网络中节点节点间通过发送消息，来完成通信。</p><p>对于某个状态，服务端会定义一系列消息供客户端使用，用来获取或改变状态。</p><p>消息由操作码和相关参数组成；标准消息的操作码是2个字节，特殊用途的消息采用1个字节操作码，其他基于特定厂商的采用3个字节操作码。</p><p>传输层决定了能传输消息体的大小，也可能使用分片与重组机制(SAR)；为了最大限度地提高性能并避免 SAR 的开销，设计目标是将消息放入单个段中。</p><p>传输层不产生分包情况下，单包可供使用的消息字节数为11(包含了消息操作码)。</p><p>传输层提供的SAR机制，可最大支持32个分包消息，当使用SAR机制时，最大支持384字节的消息传输。</p><p>SAR机制不会带来额外的空间字节开销，10字节的消息采用单包、20字节消息采用两个分包即可。</p><p>消息还分为需要ACK应答的消息、不需要ACK应答的消息。</p></li><li><p>元素(Elements)：元素是节点内的可寻址实体</p><p>每个节点至少有一个元素，拥有的元素数量在设备入网后，便无法改变，伴随节点整个生命周期。如果因为节点固件升级元素数量被改变，必须重新入网。</p></li><li><p>模型(Models)：一个model定义了节点的基础功能。比如灯会有亮度model和色彩model，一个节点可能会包含多个model。</p><p><img src="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220819100712226.png" alt="概念间的包含关系"></p><p>标准定义了三种类型的model：Server model、Client model、Control model。</p></li><li><p>地址(Addresses)：</p><p>单播地址(Unicast address)：是分配给每个元素的唯一地址，范围0x0001~0x7FFF，共32767个可用。</p><p>虚拟地址(Virtual address)：范围0x8000 - 0xBFFF，共16384个可用。</p><p>组包地址(Group address  )：0xFF00 - 0xFFFF 范围为固定用途的，0xC000 - 0xFEFF 为用户编程可用的地址范围。</p><p><img src="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220819102603601.png" alt="image-20220819102603601"></p></li></ul><h1 id="5-协议分层"><a href="#5-协议分层" class="headerlink" title="5. 协议分层"></a>5. 协议分层</h1><h2 id="5-1-Model-layer-模型层"><a href="#5-1-Model-layer-模型层" class="headerlink" title="5.1 Model layer(模型层)"></a>5.1 Model layer(模型层)</h2><p>​    定义了mesh网络中不同用途的节点可能用到的功能集合，每个model包含了一组组状态和消息，通过Model ID进行区分，可参考官方《Mesh Model Specification》。</p><h2 id="5-2-Foundation-Model-layer-基础模型层"><a href="#5-2-Foundation-Model-layer-基础模型层" class="headerlink" title="5.2 Foundation Model layer(基础模型层)"></a>5.2 Foundation Model layer(基础模型层)</h2><p>  和Model layer层类似，这里定义的是配置、管理网络相关的model.</p><h2 id="5-3-Access-layer-访问层"><a href="#5-3-Access-layer-访问层" class="headerlink" title="5.3 Access layer(访问层)"></a>5.3 Access layer(访问层)</h2><p>访问层定义了高层应用程序如何使用上层传输层。访问层定义了应用数据格式、定义和控制在上层传输层执行的应用数据加密和解密。</p><h2 id="5-4-Upper-transport-layer-上层传输层"><a href="#5-4-Upper-transport-layer-上层传输层" class="headerlink" title="5.4 Upper transport layer(上层传输层)"></a>5.4 Upper transport layer(上层传输层)</h2><p>对于来自访问层的消息，使用 <strong>AppKey</strong> 执行消息的加密和认证。 这允许上层传输层验证来自网络层的消息。</p><p>上层传输层内部生成的传输控制消息仅在网络层进行加密和验证。</p><h2 id="5-5-Lower-transport-layer-下层传输层"><a href="#5-5-Lower-transport-layer-下层传输层" class="headerlink" title="5.5 Lower transport layer(下层传输层)"></a>5.5 Lower transport layer(下层传输层)</h2><p>在需要时，下层传输层处理 PDU 的分段和重组。</p><p><img src="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220820104739167.png" alt="分包与重组示例"></p><h2 id="5-6-Network-layer-网络层"><a href="#5-6-Network-layer-网络层" class="headerlink" title="5.6 Network layer(网络层)"></a>5.6 Network layer(网络层)</h2><p>网络层采用 <strong>NetKey</strong> 加密和解密数据，节点消息的转发也由网络层实现，网络消息缓存机制也在网络层实现。</p><p><img src="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220820104551095.png" alt="网络层PDU格式"></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>通信协议</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>物联网</tag>
+      
+      <tag>sigmesh</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>技术问题库</title>
+    <link href="/2022/06/25/faq_fread_windows/"/>
+    <url>/2022/06/25/faq_fread_windows/</url>
+    
+    <content type="html"><![CDATA[<h1 id="1-文件管理"><a href="#1-文件管理" class="headerlink" title="1. 文件管理"></a>1. 文件管理</h1><h2 id="1-1-ftell-fread接口Windows下表现异常"><a href="#1-1-ftell-fread接口Windows下表现异常" class="headerlink" title="1.1 ftell fread接口Windows下表现异常"></a>1.1 ftell fread接口Windows下表现异常</h2><ul><li><p><strong>问题背景</strong>：采用 fopen 类接口编写了一段文件内容解析代码，其中会采用 ftell、fseek 获取和修改文件偏移地址；Linux环境代码运行没问题，但到了 Windows环境下ftell接口返回有一处出错，但换个文件又不会出错了，具有偶发性。</p></li><li><p><strong>知识点</strong>：Windows下编辑器文本文件默认采用CRLF换行符，Linux下默认为LF换行符。本文测试的文本文件采用CRLF换行，0x0d 0x0a</p></li><li><p><strong>测试代码</strong>：</p><figure class="highlight c"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></div></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdint.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span> **argv)</span><br>&#123;<br>    <span class="hljs-type">char</span> *file_name = argv[<span class="hljs-number">1</span>];<br><br>    FILE *fp = fopen(file_name,<span class="hljs-string">&quot;r&quot;</span>);<br>    <span class="hljs-keyword">if</span> (fp == <span class="hljs-literal">NULL</span>) &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>    &#125;<br>    <br>    <span class="hljs-type">uint8_t</span> bufz[<span class="hljs-number">16</span>];<br>    <span class="hljs-keyword">while</span> (!feof(fp)) &#123;<br>        <span class="hljs-type">int</span> ret = fread(bufz,<span class="hljs-number">1</span>,<span class="hljs-keyword">sizeof</span>(bufz),fp);<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;current offset: %ld, &quot;</span>,ftell(fp));<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;ret:%d [&quot;</span>,ret);<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; ret; i++) &#123;<br>            <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%02x &quot;</span>,bufz[i]);<br>        &#125;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;]\n&quot;</span>);<br>    &#125;<br>    <br>    fclose(fp);<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure></li><li><p><strong>测试结果</strong>：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs te">// 文件内容的二进制显示<br>00000000  54 68 69 73 20 69 73 20  61 20 41 6c 69 6e 65 0d  |This is a Aline.|<br>00000010  0a 54 68 69 73 20 69 73  20 61 20 42 6c 69 6e 65  |.This is a Bline|<br>00000020<br><br>// Windows fopen(&quot;r&quot;)<br>current offset: 0<br>current offset: 17, ret:16 [54 68 69 73 20 69 73 20 61 20 41 6c 69 6e 65 0a ]<br>current offset: 32, ret:15 [54 68 69 73 20 69 73 20 61 20 42 6c 69 6e 65 ]<br><br>// Linux<br>current offset: 16, ret:16 [54 68 69 73 20 69 73 20 61 20 41 6c 69 6e 65 0d ]<br>current offset: 32, ret:16 [0a 54 68 69 73 20 69 73 20 61 20 42 6c 69 6e 65 ]<br>current offset: 32, ret:0 []<br></code></pre></td></tr></table></figure><ol><li>对于Windows下，fread 接口读取文件遇到 \r(0x0d)认为是换行符，0x0d不返回到用户，然后继续读取满16字节返回；</li><li>对于Linux下，fread 接口没有Linux下这种骚操作，一切正常。</li></ol></li><li><p><strong>问题解决</strong>：</p><p>以二进制形式打开文件操作，便可解决问题！fopen(file_name,”rb”);</p><figure class="highlight tex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs tex">// Windows fopen(&quot;rb&quot;)<br>current offset: 16, ret:16 [54 68 69 73 20 69 73 20 61 20 41 6c 69 6e 65 0d ]<br>current offset: 32, ret:16 [0a 54 68 69 73 20 69 73 20 61 20 42 6c 69 6e 65 ]<br>current offset: 32, ret:0 []<br></code></pre></td></tr></table></figure><p>fopen类文件流接口来自C标准库，差异性源头在于Windows和Linux下编译时所采用的libc库不同，实现也有差异！</p></li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>常见问题</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>fopen</tag>
+      
+      <tag>fread</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Qt程序发布方法</title>
+    <link href="/2022/06/24/qt-release/"/>
+    <url>/2022/06/24/qt-release/</url>
+    
+    <content type="html"><![CDATA[<h1 id="1-目录形式发布程序"><a href="#1-目录形式发布程序" class="headerlink" title="1. 目录形式发布程序"></a>1. 目录形式发布程序</h1><p>如下左图所示，工程选择Release配置构建运行一次，然后在编译目录下找到release目录，将生成的<strong>xxx.exe</strong>程序拷贝出来，放到到一空文件夹下；</p><p>如下右图打开Qt自带的命令行工具，进入<strong>xxx.exe</strong>所在目录下，执行 <strong>windeployqt  xxx.exe</strong>。</p><p><img src='https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220624220122019.png' align='left'/><img src='https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220624220719807.png' align='left'/></p><p><img src="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220624222440075.png" alt="image-20220624222440075"></p><p>windeployqt工具将程序所依赖的.dll文件全部复制到当前目录下，执行完成后，本目录便可作为程序正式包发布。</p><p><img src="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220624223018699.png" alt="image-20220624223018699"></p><h1 id="2-文件形式发布程序"><a href="#2-文件形式发布程序" class="headerlink" title="2. 文件形式发布程序"></a>2. 文件形式发布程序</h1><blockquote><p>上述程序发布有个不好的地方，用户意外删除目录下一个dll文件后，将导致程序无法运行。可采用《Enigma Virtual Box》封包工具打包成单个exe文件发布。</p></blockquote><p><img src="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220624224524634.png" alt="image-20220624224524634"></p><ol><li>请选择待封包的主程序：选择<strong>xxx.exe</strong>程序</li><li>封包程序另存：封包后生成的exe程序</li><li>增加-&gt;文件夹(递归)：选择 xxx.exe 和 dll 依赖文件所在目录</li></ol><p>打包前 xxx 目录大小为 65.3MB, 封包后生成的 xxx_boxed.exe 大小为 66.7MB</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>GUI界面开发</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Qt</tag>
+      
+      <tag>GUI</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>如何优雅的提交commit</title>
+    <link href="/2022/05/15/git-commitizen/"/>
+    <url>/2022/05/15/git-commitizen/</url>
+    
+    <content type="html"><![CDATA[<h1 id="1-commitizen安装配置"><a href="#1-commitizen安装配置" class="headerlink" title="1. commitizen安装配置"></a>1. commitizen安装配置</h1><ol><li><p>commitizen 是基于nodej开发的工具，要安装 nodejs，如下步骤。</p><figure class="highlight shell"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></div></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">选择最新版本的安装源</span><br><span class="hljs-meta prompt_">$ </span><span class="language-bash">sudo curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">执行安装</span><br><span class="hljs-meta prompt_">$ </span><span class="language-bash">sudo apt-get install -y nodejs</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">安装结果确认</span><br><span class="hljs-meta prompt_">$ </span><span class="language-bash">node --version</span><br>v16.15.0<br><span class="hljs-meta prompt_">$ </span><span class="language-bash">npm --version</span><br>8.5.5<br></code></pre></td></tr></table></figure></li><li><p>commitizen 安装</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">sudo npm install -g commitizen cz-conventional-changelog</span><br><span class="hljs-meta prompt_">$ </span><span class="language-bash"><span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;&#123; &quot;path&quot;: &quot;cz-conventional-changelog&quot; &#125;&#x27;</span> &gt; ~/.czrc</span><br><span class="hljs-meta prompt_">$ </span><span class="language-bash">sudo <span class="hljs-built_in">cp</span> engine.js /usr/lib/node_modules/commitizen/node_modules/cz-conventional-changelog/engine.js</span><br><span class="hljs-meta prompt_">$ </span><span class="language-bash">sudo <span class="hljs-built_in">cp</span> index.json /usr/lib/node_modules/commitizen/node_modules/conventional-commit-types/index.json</span><br></code></pre></td></tr></table></figure></li><li><p>x</p></li></ol><h1 id="2-使用方法"><a href="#2-使用方法" class="headerlink" title="2. 使用方法"></a>2. 使用方法</h1><p>直接使用 git cz 命令代替 git commit，如下图所示，会有相应菜单提示和选项。(菜单部分可以通过修改 engine.js 和 index.json文件实现自定义)。</p><p><img src="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220516172030297.png" alt="image-20220516172030297"></p><p><img src="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220516172251605.png" alt="image-20220516172251605"></p><p><img src="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220516172323151.png" alt="image-20220516172323151"></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>办公电脑日常</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>git</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>彻底弄明白CRC校验</title>
+    <link href="/2022/03/20/crc/"/>
+    <url>/2022/03/20/crc/</url>
+    
+    <content type="html"><![CDATA[<p>CRC是应用广泛的检错码，全称是“循环冗余校验码”，也称为多项式编码。</p><h1 id="1-CRC校验的数学原理"><a href="#1-CRC校验的数学原理" class="headerlink" title="1. CRC校验的数学原理"></a>1. CRC校验的数学原理</h1><blockquote><p>数学用简洁的公式描述了自然界事物的基本规律，数学之美，一切皆来源于数学！先回顾下数学中多项式中的乘除法（下面我们只讨论系数为0或1的多项式）：</p></blockquote><p>先看个多项式除法的例子：商是 $\chi{2}+1$，余数 $-1$.<br>$$<br>\frac{\chi{3} + \chi{2}+\chi}{\chi+1} &#x3D; (\chi{2}+1) …(-1)<br>$$<br>等价于：<br>$$<br>(\chi{2}+\chi+1)\chi &#x3D; (\chi{2}+1)(\chi+1)-1<br>$$</p><p><strong>多项式系数映射为二进制数</strong>，用二进制除法来求这个多项式的解；多项式映射到二进制数的方法：</p><p>被除数 $\chi{3} + \chi{2}+\chi$ 写成 $\chi{3} + \chi{2}+\chi+0\chi{0}$；取多项式系数，即转成二进制数 $1110$ 。</p><p>同理 除数$\chi+1$ 等价于 $11$ .</p><p>二进制除法（以2为模完成，加减法都无进位和退位，等同于异或操作）：</p><p><img src="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220516173312362.png" alt="image-20220516173312362"></p><p>如上图手算，商的二进制表示为 $101$ 对应多项式 $\chi{2}+1$ , 余数为 $-1$ ，（可以看到二进制1110b转成十进制为14，11b为3，$14&#x2F;3&#x3D;5…-1$）。</p><p>上面说明了系数为1或0的多项式除法与二进制数异或操作的一些联系，我们将利用它来设计CRC校验码的生成。<br>$$<br>(\chi{2}+\chi+1)\chi &#x3D; (\chi{2}+1)(\chi+1)-1<br>$$<br>$\chi{2}+\chi+1$ 表示了原始信息111，除式$\chi+1$ 是所谓的 CRC_KEY，余数1就是所谓的CRC校验值，真正的被除数是原始信息本身乘上除式最高次$\chi{1}$得到的 $(\chi{2}+\chi+1)\chi$，也就是1110，末尾补上除式的最高次个零，$\chi{16}$ 就补上16个零。</p><p>发送方计算出CRC校验值后，用原始信息减去校验值<br>$$<br>M(\chi)*\chi{n} &#x3D; Q(\chi)*K(\chi) - R(\chi)<br>$$<br>$M(\chi)$ 是原始的信息多项式，$K(\chi)$ 是 n 阶的<code>CRC_KEY</code> 多项式，$M(\chi)*\chi{n}$ 表示将原始信息后加n个0。$R(\chi)$是余数多项式，即计算出的CRC校验值。</p><p>发送双方协商好一个共同的 $K(\chi)$，发送者将$M(\chi)*\chi{n} + R(\chi)$ 发送出去，接收者收到数据通过能否被 $K(\chi)$ 整除来校验数据的完整性，是否有错误位发生。</p><p>了解到CRC校验原理后，我们可以想象到其检错能力一定与除数多项式$K(\chi)$的长度有关，后面我们称 $K(\chi)$ 为CRC的多项式。</p><h1 id="2-手算CRC校验值"><a href="#2-手算CRC校验值" class="headerlink" title="2. 手算CRC校验值"></a>2. 手算CRC校验值</h1><p>此部分以实例来说明CRC的计算方法；取信息原始值为0x5A1301，多项式为 $\chi{16}+\chi{12}+\chi{5}+1$对应二进制 $10001000000100001$，原始值附加16个0，对应二进制$101101000010011000000010000000000000000$，二进制除法如下图所示，我们只关注余数；</p><blockquote><p>CRC计算过程：从原始数据位串高位开始依次与多项式的位串进行异或操作，得到的结果再次与多项式异或，直到长度小于多项式时，结果便是CRC校验值。</p></blockquote><img src="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220516173411778.png" alt="image-20220516173411778" style="zoom:80%;" /><p>余数为$1101111100001110$, 下图为网络工具计算结果，完全一样。</p><img src="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220516173502025.png" alt="image-20220516173502025" style="zoom:80%;" /><h1 id="3-CRC代码实现"><a href="#3-CRC代码实现" class="headerlink" title="3. CRC代码实现"></a>3. CRC代码实现</h1><p>根据上述手算过程，基于CRC-16的实现代码如下，对原始信息按字节操作，保证每一位都与多项式位串参与运算；也可以看到这里参与运算的多项式位串是<code>10001000000100001</code>，一共17位二进制。</p><figure class="highlight c"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></div></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">uint16_t</span> <span class="hljs-title function_">iot_calc_crc16</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> *data, <span class="hljs-type">uint32_t</span> size)</span><br>&#123;    <br>    <span class="hljs-type">uint16_t</span> crc_reg = <span class="hljs-number">0x0000</span>,tmp = <span class="hljs-number">0</span>;<br>    <span class="hljs-type">uint8_t</span> j,byte = <span class="hljs-number">0</span>;<br>    <br>    <span class="hljs-keyword">while</span> (size--)&#123;<br>        byte = *(data++);<br>        crc_reg ^= byte &lt;&lt; <span class="hljs-number">8</span>;<br>        <span class="hljs-keyword">for</span> ( j = <span class="hljs-number">0</span>; j &lt; <span class="hljs-number">8</span>; j++) &#123;<br>            tmp = crc_reg &amp; <span class="hljs-number">0x8000</span>;<br>            crc_reg &lt;&lt;= <span class="hljs-number">1</span>;<br>            <span class="hljs-keyword">if</span> (tmp)<br>                crc_reg ^= <span class="hljs-number">0x1021</span>;<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> crc_reg;<br>&#125;<br></code></pre></td></tr></table></figure><p>关于上述代码是如何将多项式位串的最高位参与运算的，请自行揣摩；记住一个规则：多项式位串最高位一定是1。</p><p>代码获取：<a href="https://github.com/SeeDeer/crc">https://github.com/SeeDeer/crc</a></p><h1 id="4-CRC的检错能力"><a href="#4-CRC的检错能力" class="headerlink" title="4. CRC的检错能力"></a>4. CRC的检错能力</h1><p>先来看一个例子，如何人为的制造错误，让接收方校验通过。</p><p>发送方原始数据(0x5A,0x13,0x01)：1011010 00010011 00000001，进行<code>CRC16_XMODEM</code> 运算后，crc校验值(0xDF0E)：1101111100001110。</p><p>发送方发送的数据(0x5A,0x13,0x01,0xDF,0x0E)：1011010 00010011 00000001 1101111100001110，接收方收到后再进行<code>CRC16_XMODEM</code> 运算，如果结果为零，说明校验通过。</p><p>好了，我们来人为的制造错误，<code>CRC16_XMODEM</code>的多项式是 $\chi{16}+\chi{12}+\chi{5}+1$ ，对应位串 100010000 00100001，将发送的数据和多项式位串低位对齐，进行一次异或操作得到的数也能校验通过。</p><table><thead><tr><th></th><th></th><th></th></tr></thead><tbody><tr><td>原数据</td><td>1011010 00010011 0000000<strong>1</strong> 110<strong>1</strong>111100<strong>0</strong>0111<strong>0</strong></td><td>0x5A,0x13,0x01,0xDF,0x0E</td></tr><tr><td>人为制造错误的数据</td><td>1011010 00010011 0000000<strong>0</strong> 110<strong>0</strong>111100<strong>1</strong>1111<strong>1</strong></td><td>0x5A,0x13,0x00,0xCF,0x2F</td></tr></tbody></table><p>可以看到，错误发生时，要想校验通过，必须满足错误位刚好发生在除数多项式$K(\chi)$中；除此之外其他错误都能被检测到。</p><h1 id="5-CRC校验总结"><a href="#5-CRC校验总结" class="headerlink" title="5. CRC校验总结"></a>5. CRC校验总结</h1><ol><li>CRC是一种检错码，不具备纠错能力；检测到错误发生时，由重传来处理，用于错误率较低的数据链路，。</li><li>数学原理上：将信息的二进制 $k$ 位帧看作一个 $k-1$ 次多项式的系数列表，该多项式有$k$项，从 $X^{k-1}$ 到 $X^0$ 。发送方和接收方约定一个除数多项式$K(\chi)$ ，发送方将原始信息帧多项式乘以$X^{k-1}$后，再除以$K(\chi)$，所得余数 $R(\chi)$即为计算出的CRC校验值；发送时减去余数 $R(\chi)$ 发送。接收方如果接收到正确数据时，将可以被约定的 $K(\chi)$ 整除。依次来完成校验。</li><li>整个运算采用异或操作来完成，很多芯片实现了CRC硬件运算单元，提高了运算速度。</li><li>CRC的除数多项式选取很重要，最高位和最低位系数必须为1。一般采用业界认可的常用多项式。</li></ol>]]></content>
+    
+    
+    <categories>
+      
+      <category>通信协议</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>CRC</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>蓝牙协议学习入门</title>
+    <link href="/2022/03/16/bluetooth/"/>
+    <url>/2022/03/16/bluetooth/</url>
+    
+    <content type="html"><![CDATA[<h1 id="1-蓝牙发展历史"><a href="#1-蓝牙发展历史" class="headerlink" title="1. 蓝牙发展历史"></a>1. 蓝牙发展历史</h1><p>​    蓝牙（英语：Bluetooth），一种无线通讯技术标准，用来让固定与移动设备，在短距离间交换资料，以形成个人局域网（PAN）。其使用短波特高频（UHF）无线电波，经由2.4至2.485 GHz的ISM频段来进行通信。1994年由电信商爱立信（Ericsson）发展出这个技术。它最初的设计，是希望创建一个RS-232数据线的无线通信替代版本。它能够链接多个设备，克服同步的问题。</p><p>​    蓝牙技术目前由蓝牙技术联盟（SIG）来负责维护其技术标准，其成员已超过三万，分布在电信、电脑、网络与消费性电子产品等领域。IEEE曾经将蓝牙技术标准化为IEEE 802.15.1，但是这个标准已经不再继续使用。</p><p><strong>技术类型：蓝牙技术分为基础率&#x2F;增强数据率（BR&#x2F;EDR）和低耗能（LE）两种技术类型。其中BR&#x2F;EDR型是以点对点网络拓扑结构创建一对一设备通信；LE型则使用点对点（一对一）、广播（一对多）和网格（多对多）等多种网络拓扑结构。</strong></p><p><a href="https://www.bluetooth.com/">蓝牙技术联盟</a>（英语：Bluetooth Special Interest Group，缩写为SIG）拥有蓝牙的商标，负责制定蓝牙规范、认证制造厂商，授权他们使用蓝牙技术与蓝牙标志，但本身不负责蓝牙设备的设计、生产及贩售。</p><h2 id="1-2-蓝牙2-x-EDR"><a href="#1-2-蓝牙2-x-EDR" class="headerlink" title="1.2 蓝牙2.x+EDR"></a>1.2 蓝牙2.x+EDR</h2><p>​    蓝牙2.0+EDR版加入了“非跳跃窄频通道”（Non-hopping narrowband channel）。因为不需要与每个设备交换应答信号，这种通道可以用来将各种器件的蓝牙服务概要同时广播到巨量的蓝牙器件。应答信号交换过程当前需要大约一秒。实时公共交通时刻表、基本的交通畅通性信息和高级交通指向指示等未加密信息可以以高速度发送给设备。更高的连接速度，支持多个速度水平。</p><p>​    2007年7月26日，蓝牙技术联盟通过了蓝牙核心规范2.1+EDR，向下对1.2版本完全兼容，并增加了Sniff省电功能，使得适配器与设备的联系时间延长到0.5秒，能节约不小电量；增强功能有简单安全配对（SSP），这改善了蓝牙设备的配对经验，同时提升了使用和安全强度。</p><h2 id="1-3-蓝牙3-0-HS"><a href="#1-3-蓝牙3-0-HS" class="headerlink" title="1.3 蓝牙3.0+HS"></a>1.3 蓝牙3.0+HS</h2><p>​    2009年4月21日，蓝牙技术联盟颁布了蓝牙核心规范3.0版（3.0+HS），是一种全新的交替射频技术。<strong>蓝牙3.0+HS提高了资料传输速率</strong>，集成802.11PAL最高速度可达<strong>24Mbps</strong>。是蓝牙2.0速度的8倍。此外，引入了增强电源控制，实际空闲功耗明显降低。</p><h2 id="1-4-蓝牙4-x"><a href="#1-4-蓝牙4-x" class="headerlink" title="1.4 蓝牙4.x"></a>1.4 蓝牙4.x</h2><p>​    Bluetooth 4.0，协议组成和当前主流的Bluetooth h2.x+EDR、还未普及的Bluetooth h3.0+HS不同，Bluetooth 4.0是Bluetooth从诞生至今唯一的一个综合协议规范，提出了“低功耗蓝牙”、“传统蓝牙”和“高速蓝牙”三种模式。</p><ul><li>高速蓝牙：主攻数据交换与传输；</li><li>传统蓝牙：则以信息沟通、设备连接为重点；</li><li>低功耗蓝牙：顾名思义，以不需占用太多带宽的设备连接为主。前身其实是NOKIA开发的Wibree技术，本是作为一项专为移动设备开发的极低功耗的移动无线通信技术，在被SIG接纳并规范化之后重命名为Bluetooth Low Energy（后简称低功耗蓝牙）。</li></ul><p>​    这三种协议规范还能够互相组合搭配、从而实现更广泛的应用模式，此外，Bluetooth 4.0还把蓝牙的传输距离提升到100米以上（低功耗模式条件下）。</p><p>​    分Single mode与Dual mode。Single mode只能与BT4.0互相传输无法向下兼容（与3.0&#x2F;2.1&#x2F;2.0无法相通）;Dual mode可以向下兼容，可与BT4.0传输也可以跟3.0&#x2F;2.1&#x2F;2.0传输。</p><p>​    跳频：使用所有蓝牙规范版本通用的自适应跳频，最大程度地减少和其他2.4 GHz ISM频段无线技术的串扰。</p><p>​    2013年底，蓝牙技术联盟推出了蓝牙4.1规范，其目的是为了让 Bluetooth Smart 技术最终成为物联网(Internet of Things)发展的核心动力。</p><p>​    2014年12月，蓝牙技术联盟推出了蓝牙4.2规范。</p><h2 id="1-5-蓝牙5-x"><a href="#1-5-蓝牙5-x" class="headerlink" title="1.5 蓝牙5.x"></a>1.5 蓝牙5.x</h2><p>​    蓝牙5.0在2016年6月发布。在有效传输距离上将是4.2LE版本的4倍，传输速度将是4.2LE版本的2倍（速度上限为24Mbps）。蓝牙5.0还支持室内定位导航功能（结合WiFi可以实现精度小于1米的室内定位），允许无需配对接受信标的数据（比如广告、Beacon、位置信息等，传输率提高了8倍），针对物联网进行了很多底层优化。</p><p>​    2019年1月，蓝牙技术联盟推出了蓝牙5.1规范。</p><p>​    2020年1月，蓝牙技术联盟推出了蓝牙5.2规范。</p><h2 id="1-6-总结"><a href="#1-6-总结" class="headerlink" title="1.6 总结"></a>1.6 总结</h2><ul><li><p>我们常说的蓝牙4.0不等同于BLE，BLE只是蓝牙4.0的子集；蓝牙4.0是一个综合性协议规范。</p></li><li><p>蓝牙4.0版本以后技术模式上分为<strong>低功耗蓝牙</strong>(BLE)和<strong>经典蓝牙</strong>(BR&#x2F;EDR)两种、市场芯片多数为仅支持BLE的，也有两者都支持的（双模蓝牙芯片）。</p></li><li><p>蓝牙芯片的三种功能配置：</p><p><img src="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220317143820174.png" alt="image-20220317143820174"></p></li></ul><h1 id="2-蓝牙协议栈"><a href="#2-蓝牙协议栈" class="headerlink" title="2. 蓝牙协议栈"></a>2. 蓝牙协议栈</h1><p>蓝牙协议栈由<strong>主机 + HCI(可选) + 控制器</strong>三大块组成，其中对于单芯片方案是没用HCI的。</p><ul><li>主机(Host) ：主机部分由核心协议层(L2CAP、SDP、SMP、ATT)和核心规范(GAP、GATT)构成；</li><li>控制器(Controller)：此部分拆分为低功耗蓝牙<strong>（Vol 6: Low Energy Controller）</strong>和经典蓝牙<strong>（Vol 2: BR&#x2F;EDR Controller）</strong>两个章节说明</li><li>HCI：此部分定义了主机和控制器之间通信的接口标准<strong>（Vol 4: Host Controller Interface）</strong>，可以是UART、USB等通信方式。</li></ul><p><img src="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220317152528059.png" alt="image-20220317152528059"></p><p>​    上图中红色部分是BR&#x2F;EDR经典蓝牙的必选项，绿色部分是LE低功耗蓝牙必选项，蓝色部分是公共部分；当然经典蓝牙也可以具备绿色部分特性。HCI接口根据芯片架构有关，是可选项。两者在物理层的差异性图中没有体现，不涉及芯片设计，这块可暂不关注。</p><ol><li><p><strong>GAP规范（通用接入规范）</strong>：定义了所有蓝牙设备的基础功能，设备间发现、连接、配对绑定的流程；蓝牙设备中四种角色；广播和扫描响应报文的格式；还有一些通用蓝牙参数定义，比如设备地址、名称、配对秘钥和设备的外观特征值，用于区分是什么设备，手机还是电脑；明确了作为一个低功耗蓝牙设备的基本需求，包含哪些层级以及如何协同工作的。</p><ul><li>定义了蓝牙设备中的四种角色，广播者、观察者、外设角色、中心角色。广播者是一定具备发送广播包能力的设备，可以没有接收装置，比如beacon传感器等；观察者是一定具备接收报文能力的设备，去接收广播者的信息，可以没有发送装置，实际应用中这种设备好像还没出现过；外设角色使用可连接广播事件去建立链路层的连接，连接成功后，将成为slave 角色，必须同时具备接收和发射装置；中心角色接收到外设角色的可连接广播包后，可向其发起连接，连接成功后，将成为Master角色，必须同时具备接收和发射装置。</li><li>规范了一些通用的蓝牙参数：蓝牙设备地址、设备名称、配对秘钥、外观特征值（用于区分设备是手机还是电脑）。</li><li>其他详情可参考<strong>《Core_v4.2.pdf》中</strong><code>Part C: Generic Access Profile</code>章节部分，此部分对比说明了经典蓝牙和低功耗蓝牙的GAP规范。</li></ul></li><li><p><strong>ATT（属性协议）</strong>：定义了访问对端设备上数据的一组规则，是GATT规范的基础，也是低功耗蓝牙的基石。定义了Host端属性报文格式和报文类型。</p><ol><li><p>Requests：请求报文，客户端发给服务端，且需要服务端的一个应答Responses；（C-&gt;S，带ACK的请求报文）</p></li><li><p>Responses ：响应报文，和Requests成对出现，服务端对客户端Requests的Responses；</p></li><li><p>Commands ：命令报文，客户端发给服务端，不需要应答；</p></li><li><p>Notifications ：通知报文，服务端主动发给客户端的通知；</p></li><li><p>Indications ：通知报文，相比Notifications，客户端要应答确认Confirmations ，是否收到通知了；</p></li><li><p>Confirmations ：和Indications 成对出现；</p></li></ol></li><li><p><strong>GATT（通用属性规范）</strong>：位于ATT之上，定义了属性的类型及其使用方法。 GATT用来规范attribute中的数据内容，并运用group（分组）的概念对attribute进行分类管理。<strong>没有GATT，BLE协议栈也能跑，但互联互通就会出问题</strong>。</p></li><li><p><strong>L2CAP层（链路控制和适配协议）</strong>：屏蔽了控制器传输协议中的许多特性，方便高层协议的开发；报文分片和重组(SAR)；流控、重传、报文完整性校验等。</p><img src="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/1642822980936-9802828a-804f-41bd-9901-c8bc0c09dd57.png" alt="1642822980936-9802828a-804f-41bd-9901-c8bc0c09dd57" style="zoom:80%;" /></li><li><p><strong>SMP（安全管理协议）</strong>：定义了蓝牙设备配对、认证、解密等行为的安全操作。</p></li><li><p>**LLCP&#x2F;LL (链路层控制)**：低功耗蓝牙参考 <strong>《Core_v4.2.pdf》中</strong><code>Part B: Link Layer Specification</code>章节部分。</p></li><li><p><strong>PHY（物理层）</strong>：低功耗蓝牙采用40个信道，分为数据信道和广播信道；广播信道占用3个，用于发现设备、建立连接、广播数据；数据信道占用37个，用于已建立连接设备间的数据通信。建立连接的两个设备，必须同一时间处于同一信道上才能通信。</p><p><img src="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220317161753050.png" alt="image-20220317161753050"></p></li></ol><h1 id="3-学习路线"><a href="#3-学习路线" class="headerlink" title="3. 学习路线"></a>3. 学习路线</h1><blockquote><p>此部分给出低功耗蓝牙的基本学习路线，不一定适合所有人，欢迎评论区吐槽交流。</p></blockquote><p>基本思想：带着问题学习，比如”ble设备之间怎么建立连接的？“    ”ble设备连接报活机制 ？“</p><ol><li>初步理解协议栈基本组成、专业术语，对协议栈有整体的认识。</li><li>结合相关项目抓包分析，结合理论和实际表现分析每个子过程，比如ble广播功能、ble建立连接等。有条件的可以整个开发板，都有配套教程代码，可以直接运行的。</li><li>相关协议栈源码移植和学习，推荐<code>Zephyr</code>.</li></ol><h1 id="4-协议文档"><a href="#4-协议文档" class="headerlink" title="4. 协议文档"></a>4. 协议文档</h1><ol><li>蓝牙联盟官方下载入口：<a href="http://www.bluetooth.com/">www.bluetooth.com</a></li><li>个人网盘分享：<a href="https://www.aliyundrive.com/s/dhKyoDvENGY">https://www.aliyundrive.com/s/dhKyoDvENGY</a></li></ol>]]></content>
+    
+    
+    <categories>
+      
+      <category>通信协议</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>bluetooth</tag>
+      
+      <tag>物联网</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>git实用手册(持续更新)</title>
+    <link href="/2022/03/16/easy-git/"/>
+    <url>/2022/03/16/easy-git/</url>
+    
+    <content type="html"><![CDATA[<h1 id="1-git简介"><a href="#1-git简介" class="headerlink" title="1. git简介"></a>1. git简介</h1><p>​    没错，它只是一个工具，学会用很重要。git是一个分布式版本控制软件，最初Linux内核的作者Linus Torvalds制作，最初目的为了更好的管理Linux内核代码而设计。</p><p><img src="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220316084424052.png" alt="image-20220316084424052"></p><ul><li>工作区( working directory)：下载远程仓库到本地后，文件被修改后处于工作区；可以使用<code>git status</code>命令查看工作区中文件。</li><li>暂存区(staged)：执行<code>git add file</code>命令将会使工作区被修改文件添加到暂存区，这一步是让作者把将要提交文件先一次性选择好。</li><li>git commit：<code>git commit -m &quot;xx&quot;</code>命令将会提交暂存区所有文件的修改，并生成一个commit提交记录，此时提交还在本地仓库。</li><li>提交修改到线上：<code>git push origin branch_name</code> 命令会提交本地仓库的commit到远程仓库，branch_name是本地仓库所在分支名称。</li><li>暂存区不属于任何分支、暂存区清空后，本地仓库才能进行切换分支操作。</li><li>HEAD指针：</li></ul><h1 id="2-常用命令"><a href="#2-常用命令" class="headerlink" title="2. 常用命令"></a>2. 常用命令</h1><ol><li><p>git reset 回退撤销修改</p><blockquote><p>HEAD^ 可以用来指定当前的commit_id；HEAD^^代表上一个commit_id；依次推类。</p></blockquote><table><thead><tr><th>命令</th><th>说明</th></tr></thead><tbody><tr><td>git reset HEAD file</td><td>撤销某个文件的git add, 修改回到工作区</td></tr><tr><td>git reset –soft commit_id</td><td>撤销commit操作，修改回到暂存区</td></tr><tr><td>git reset –mixed commit_id(–mixed参数可以省略)</td><td>撤销commit和add操作，修改回到工作区</td></tr><tr><td>git reset –hard commit_id</td><td>撤销commit和add操作，删除工作空间改动代码（慎用）</td></tr></tbody></table></li><li><p>git status 查看本地仓库状态</p></li><li><p>git rebase 用法小结</p></li></ol><h2 id="2-1-本地仓库关联多个远程仓库"><a href="#2-1-本地仓库关联多个远程仓库" class="headerlink" title="2.1 本地仓库关联多个远程仓库"></a>2.1 本地仓库关联多个远程仓库</h2><p>当远程仓库地址迁移后，本地仓库可关联新的远程仓库地址，旧地址依旧保留。</p><ol><li>origin 重命名为 old_origin：<code>git remote rename origin origin_old</code></li><li>origin 默认关联到 新的远程仓库：<code>git remote add origin new.git </code></li><li>本地修改提交到新远程仓库：<code>git push origin msater</code></li><li>本地修改提交到旧远程仓库：<code>git push old_origin msater</code></li></ol><h1 id="3-分支管理"><a href="#3-分支管理" class="headerlink" title="3. 分支管理"></a>3. 分支管理</h1><p>项目开发过程中，一般分为稳定发布分支master、开发分支develop、功能分支feature、Bug修复分支bugfix_xxx等四种类型。</p><ul><li><p>分支管理基本流程图 <a href="https://nvie.com/posts/a-successful-git-branching-model/">https://nvie.com/posts/a-successful-git-branching-model/</a></p><p><img src="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220316104121946.png" alt="image-20220316104121946"></p></li><li><p>分支合并规范(建议)</p><ul><li><p>commit描述尽可能详细, 推荐使用commitizen插件, <code>git cz</code>代替<code>git commit</code>;</p><p>配置参考文章 <a href="https://seedeer.github.io/2022/05/15/git-commitizen/">如何优雅的提交commit</a></p><p>git cz 将commit描述分为简要描述和详细描述两个部分，以及一些修改对版本兼容性说明。</p></li><li><p>git merge时请慎用 –squash 参数，–squash会将多个commit合成一个，这不便于后续版本修改记录查看和代码维护。如果开发过程中commit节点提交的太零散，可以采用<code>git rebase -i </code>命令整合commit，然后采用fast forward行为合入。</p></li><li><p>其他待补充</p></li></ul></li></ul><h1 id="4-git-子仓库"><a href="#4-git-子仓库" class="headerlink" title="4. git 子仓库"></a>4. git 子仓库</h1><p>​    在日常开发中,我们经常git来当做代码版本管理工具,使用中基本都是一个项目一个Git仓库的形式,那么当我们的代码中碰到了业务级别的需要复用的代码,我们一般怎么做呢 ?  Git子模块允许我们将一个或者多个Git仓库作为另一个Git仓库的子目录,它能让你将另一个仓库克隆到自己的项目中,同时还保持提交的独立。</p><ol><li><p>向父仓库添加子仓库：<code>git submodule add https://github.com/xxx.git</code></p><p>如下图，iot_project 为父仓库，执行命令后，子仓库将以子目录的形式存在；父仓库将会新增.gitmodules和子仓库目录。</p><p><img src="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/1625489517933-e44a3f15-ddb5-41ef-ae86-850d7a48c2aa.png" alt="1625489517933-e44a3f15-ddb5-41ef-ae86-850d7a48c2aa"></p></li><li><p>子仓库有修改后，父仓库如何感知？如下只是以子目录的形式提示，不显示细节。</p><figure class="highlight bash"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div></td><td class="code"><pre><code class="hljs bash">zhaocs@DESKTOP-2J12679 iot_project [develop] $ git status<br>On branch develop<br>Changes not staged <span class="hljs-keyword">for</span> commit:<br>  (use <span class="hljs-string">&quot;git add &lt;file&gt;...&quot;</span> to update what will be committed)<br>  (use <span class="hljs-string">&quot;git checkout -- &lt;file&gt;...&quot;</span> to discard changes <span class="hljs-keyword">in</span> working directory)<br><br>        modified:   os_algorithm (new commits)<br></code></pre></td></tr></table></figure></li><li><p>clone 父仓库后，怎么拉取子仓库内容？<code>git submodule update --init --recursive</code></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash">seedeer@DESKTOP-70ULORM:~/Study/iot_project$ git submodule update --init --recursive<br>Submodule <span class="hljs-string">&#x27;os_algorithm&#x27;</span> (https://github.com/SeeDeer/os_algorithm.git) registered <span class="hljs-keyword">for</span> path <span class="hljs-string">&#x27;os_algorithm&#x27;</span><br>Submodule <span class="hljs-string">&#x27;os_time&#x27;</span> (https://github.com/SeeDeer/os_time.git) registered <span class="hljs-keyword">for</span> path <span class="hljs-string">&#x27;os_time&#x27;</span><br>Cloning into <span class="hljs-string">&#x27;/home/seedeer/Study/iot_project/os_algorithm&#x27;</span>...<br>Cloning into <span class="hljs-string">&#x27;/home/seedeer/Study/iot_project/os_time&#x27;</span>...<br>Submodule path <span class="hljs-string">&#x27;os_algorithm&#x27;</span>: checked out <span class="hljs-string">&#x27;ee81fccef733738ac643feb89960849b7c888827&#x27;</span><br>Submodule path <span class="hljs-string">&#x27;os_time&#x27;</span>: checked out <span class="hljs-string">&#x27;0a058507b2f4ab19ab75993c1da2bb7a93105d66&#x27;</span><br></code></pre></td></tr></table></figure></li><li><p>批量查看子仓库修改： <code>git submodule foreach git status</code></p></li><li><p>替换子模块的url 为 ssh方式</p><ul><li><p>手动修改  .gitmodules 文件中 url</p></li><li><p>使用 git submodule sync 命令，将新的URL更新到文件.git&#x2F;config</p></li></ul></li></ol><h1 id="5-附录"><a href="#5-附录" class="headerlink" title="5. 附录"></a>5. 附录</h1><h2 id="5-1-免密操作配置"><a href="#5-1-免密操作配置" class="headerlink" title="5.1 免密操作配置"></a>5.1 免密操作配置</h2><blockquote><p>和git远程仓库交互时有https和ssh两种方式，如果每次提交都要输入账户登陆密码将会很繁琐。</p></blockquote><ol><li><p>https方式免密码操作配置：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs b">git config --global user.email &quot;你的git的注册邮箱&quot;<br>git config --global user.user&quot;你的git用户名<br></code></pre></td></tr></table></figure><p>然后输入一次用户密码，再根据自己的需求执行下面的任意一条命令：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs shell">1、设置记住密码（默认15分钟）：<br>git config --global credential.helper cache<br><br>2、如果想自己设置时间，可以这样做：<br>git config credential.helper &#x27;cache --timeout=3600&#x27;<br>这样就设置一个小时之后失效<br><br>3、长期存储密码：<br>git config --global credential.helper store<br><br>4、增加远程地址的时候带上密码也是可以的。(推荐)<br>http://yourname:password@git.oschina.net/name/project.git<br></code></pre></td></tr></table></figure></li><li><p>ssh方式免密操作配置：</p><ul><li><p>同上：git config –global先设置，然后ssh客户端本地生成ssh key，进入用户下<code>.ssh</code>目录下执行<code>ssh-keygen -t rsa</code>, 然后一路回车确认即可。</p><p><img src="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220316115740457.png" alt="image-20220316115740457"></p></li><li><p>将ssh key中的公钥内容配置到ssh服务器上，github网站配置方法如下：进入账户设置</p><p><img src="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220316120420617.png" alt="image-20220316120420617"></p></li><li><p>认证情况测试：<code>ssh -T git@github.com</code></p><p><img src="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220316121057600.png" alt="image-20220316121057600"></p></li></ul></li><li><p>xxx</p></li></ol>]]></content>
+    
+    
+    <categories>
+      
+      <category>工具使用</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>git</tag>
+      
+      <tag>github</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  
+</search>

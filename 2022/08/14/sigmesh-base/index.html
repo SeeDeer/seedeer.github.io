@@ -1,0 +1,658 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="SeeDeer">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="本文介绍Sigmesh协议的基本功能及协议层分工介绍。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SigMesh网络的基础知识">
+<meta property="og:url" content="http://example.com/2022/08/14/sigmesh-base/index.html">
+<meta property="og:site_name" content="SeeDeer的博客">
+<meta property="og:description" content="本文介绍Sigmesh协议的基本功能及协议层分工介绍。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220819104444105.png">
+<meta property="og:image" content="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220819100712226.png">
+<meta property="og:image" content="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220819102603601.png">
+<meta property="og:image" content="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220820104739167.png">
+<meta property="og:image" content="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220820104551095.png">
+<meta property="article:published_time" content="2022-08-14T04:00:15.000Z">
+<meta property="article:modified_time" content="2023-04-09T12:37:40.647Z">
+<meta property="article:author" content="SeeDeer">
+<meta property="article:tag" content="物联网">
+<meta property="article:tag" content="sigmesh">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220819104444105.png">
+  
+  
+  <title>SigMesh网络的基础知识 - SeeDeer的博客</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"3d4c9f7db2932e5518c123f34db80bba","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>SeeDeer</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="SigMesh网络的基础知识">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-08-14 12:00" pubdate>
+        2022年8月14日 中午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.6k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      30 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">SigMesh网络的基础知识</h1>
+            
+            <div class="markdown-body">
+              <h1 id="1-功能概述"><a href="#1-功能概述" class="headerlink" title="1. 功能概述"></a>1. 功能概述</h1><p>​    SigMesh 是基于低功耗蓝牙(BLE)基础之上的一种mesh网络应用层协议，数据链路层直接复用BLE的链路层，未做任何修改。对于一般的mesh网络来说，要解决的问题有以下几种：</p>
+<ol>
+<li>mesh网络的管理：节点如何加入网络？如何离开网络？可管理最大节点数量？低功耗节点的支持 ？</li>
+<li>节点间消息的传递：<ul>
+<li>节点间一对一的传输（单播）？  节点间一对多的传输（组播）？</li>
+<li>消息传输延迟，如何寻求最佳路径？</li>
+<li>可稳定传递消息的mesh网络最大距离 ？</li>
+<li>如何保证消息的可靠到达？</li>
+<li>单包消息可承载的应用报文大小 ？组包和分包的处理机制及可靠性？</li>
+</ul>
+</li>
+<li>mesh网络的安全机制保障 ？</li>
+</ol>
+<p>SigMesh网络标准基于泛洪网络的机制实现，使用了BLE链路层的广播通道来传递消息，信号范围内其他节点都可接收到消息，并进行中继转发，以扩大消息传递范围。在本规范的未来修订版中，可能会考虑添加路由功能和定义基于路由的网状网络的增强功能。</p>
+<ul>
+<li><p><strong>网络风暴</strong>：当网络节点数量不断增大时，如果任由消息的不断中继，将会使得整个网络带宽阻塞，正常消息传递无法响应；引发网络风暴，mesh网络瘫痪 ！</p>
+</li>
+<li><p><strong>消息中继</strong>：Sigmesh网络目前提供了两种方式来限制泛洪网络中消息的无限制中继，消息缓存和消息最大中继次数(TTL值)。</p>
+<ul>
+<li><strong>网络消息缓存：</strong>在通过将所有消息添加到缓存列表来防止设备中继以前接收到的消息。 收到消息时，会根据列表检查它，如果已经存在则忽略它。 如果尚未收到，则将其添加到缓存中，以便将来可以忽略。 为防止此列表变得过长，缓存的消息数量受实现限制。</li>
+<li><strong>TTL：</strong>每条消息都包含一个生存时间 (TTL) 值，该值限制了一条消息可以被中继的次数。 每次设备接收到消息然后中继（最多 126 次）时，TTL 值减 1。</li>
+</ul>
+</li>
+<li><p><strong>通信支持</strong>：现存的一些BLE设备可能不支持通过广播处理mesh消息，为了能在不升级软硬件的基础上，无缝接入mesh网络，mesh网络提供了GATT承载层的支持，可供此类设备接入，比如手机、平板等。</p>
+</li>
+<li><p><strong>低功耗</strong>：低功耗节点的控制报文处理通过与具备朋友特性节点建立友谊来实现。</p>
+</li>
+<li><p><strong>节点入网</strong>：Provisioner负责mesh网络中节点的添加和删除，Provisioning协议可通过广播承载或GATT承载实现。理论上每个节点都可作为Provisioner。</p>
+</li>
+</ul>
+<h1 id="2-节点的特性"><a href="#2-节点的特性" class="headerlink" title="2. 节点的特性"></a>2. 节点的特性</h1><p>​    Sigmesh网络中节点除了拥有最基本的消息发送和接收功能，还有一些可选的额外功能。</p>
+<ol>
+<li>朋友（Friend）：缓存低功耗节点未处理的消息，低功耗节点唤醒后可获取处理；节点启用朋友功能后，且与低功耗节点建立友谊关系后，便成为一个朋友节点。</li>
+<li>中继（Relay）：基于广播承载层，接收和转发mesh消息的能力，以扩大网络传输范围。</li>
+<li>代理（Proxy）：基于GATT承载和广播承载之间，接收和转发mesh消息的能力。</li>
+<li>低功耗（Low Power）：采用电池供电的节点，不会一直处于工作状态；需要接收消息时，与具备朋友能力的节点一起使用时，才能显著降低功耗。</li>
+</ol>
+<h1 id="3-网络拓扑"><a href="#3-网络拓扑" class="headerlink" title="3. 网络拓扑"></a>3. 网络拓扑</h1><p><img src="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220819104444105.png" srcset="/img/loading.gif" lazyload alt="mesh网络拓扑"></p>
+<p>Figure shows three Relay nodes: Q, R, and S. </p>
+<p>The three nodes that support the Friend feature are N, O, and P, however N does not have any friendships; therefore only O and P are Friend nodes. </p>
+<p>There are five Low Power nodes: I, J, K, L, and M. Nodes I, J, and K have P as their friend, while L and M have O as their friend. </p>
+<p>Node T is only connected to the mesh network using a GATT bearer; <strong>therefore S must relay all messages to and from T</strong>.  </p>
+<p>For example, if a message is to be sent from T to L, then T will send the message to node S using the GATT bearer. Node S will retransmit this message using the advertising bearer. Nodes H, R, N, and O are within radio range of node S; therefore they will receive this message. Node O, being the friend of node L will store the message, and if the message was a segmented message, node O will respond with an acknowledgment at the lower transport layer. Sometime later, L will poll node O to check for new messages, such that O will forward the message originally sent by T to L.  </p>
+<h1 id="4-相关概念"><a href="#4-相关概念" class="headerlink" title="4. 相关概念"></a>4. 相关概念</h1><p>为更好的描述Sigmesh网络的功能和机制，Mesh标准定义了几种不同的概念；状态(states)、消息(messages)、绑定(bindings)、元素(Elements)、addressing, models, publish-subscribe, mesh keys, and associations.  </p>
+<ul>
+<li><p>状态(states)：A state is a value representing a condition of an element.</p>
+</li>
+<li><p>Bound states ：节点内部或节点之间的一个状态联动机制，比如开关节点的开关状态联动灯节点的亮灭状态。</p>
+</li>
+<li><p>消息(messages)：mesh网络中节点节点间通过发送消息，来完成通信。</p>
+<p>对于某个状态，服务端会定义一系列消息供客户端使用，用来获取或改变状态。</p>
+<p>消息由操作码和相关参数组成；标准消息的操作码是2个字节，特殊用途的消息采用1个字节操作码，其他基于特定厂商的采用3个字节操作码。</p>
+<p>传输层决定了能传输消息体的大小，也可能使用分片与重组机制(SAR)；为了最大限度地提高性能并避免 SAR 的开销，设计目标是将消息放入单个段中。</p>
+<p>传输层不产生分包情况下，单包可供使用的消息字节数为11(包含了消息操作码)。</p>
+<p>传输层提供的SAR机制，可最大支持32个分包消息，当使用SAR机制时，最大支持384字节的消息传输。</p>
+<p>SAR机制不会带来额外的空间字节开销，10字节的消息采用单包、20字节消息采用两个分包即可。</p>
+<p>消息还分为需要ACK应答的消息、不需要ACK应答的消息。</p>
+</li>
+<li><p>元素(Elements)：元素是节点内的可寻址实体</p>
+<p>每个节点至少有一个元素，拥有的元素数量在设备入网后，便无法改变，伴随节点整个生命周期。如果因为节点固件升级元素数量被改变，必须重新入网。</p>
+</li>
+<li><p>模型(Models)：一个model定义了节点的基础功能。比如灯会有亮度model和色彩model，一个节点可能会包含多个model。</p>
+<p><img src="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220819100712226.png" srcset="/img/loading.gif" lazyload alt="概念间的包含关系"></p>
+<p>标准定义了三种类型的model：Server model、Client model、Control model。</p>
+</li>
+<li><p>地址(Addresses)：</p>
+<p>单播地址(Unicast address)：是分配给每个元素的唯一地址，范围0x0001~0x7FFF，共32767个可用。</p>
+<p>虚拟地址(Virtual address)：范围0x8000 - 0xBFFF，共16384个可用。</p>
+<p>组包地址(Group address  )：0xFF00 - 0xFFFF 范围为固定用途的，0xC000 - 0xFEFF 为用户编程可用的地址范围。</p>
+<p><img src="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220819102603601.png" srcset="/img/loading.gif" lazyload alt="image-20220819102603601"></p>
+</li>
+</ul>
+<h1 id="5-协议分层"><a href="#5-协议分层" class="headerlink" title="5. 协议分层"></a>5. 协议分层</h1><h2 id="5-1-Model-layer-模型层"><a href="#5-1-Model-layer-模型层" class="headerlink" title="5.1 Model layer(模型层)"></a>5.1 Model layer(模型层)</h2><p>​    定义了mesh网络中不同用途的节点可能用到的功能集合，每个model包含了一组组状态和消息，通过Model ID进行区分，可参考官方《Mesh Model Specification》。</p>
+<h2 id="5-2-Foundation-Model-layer-基础模型层"><a href="#5-2-Foundation-Model-layer-基础模型层" class="headerlink" title="5.2 Foundation Model layer(基础模型层)"></a>5.2 Foundation Model layer(基础模型层)</h2><p>  和Model layer层类似，这里定义的是配置、管理网络相关的model.</p>
+<h2 id="5-3-Access-layer-访问层"><a href="#5-3-Access-layer-访问层" class="headerlink" title="5.3 Access layer(访问层)"></a>5.3 Access layer(访问层)</h2><p>访问层定义了高层应用程序如何使用上层传输层。访问层定义了应用数据格式、定义和控制在上层传输层执行的应用数据加密和解密。</p>
+<h2 id="5-4-Upper-transport-layer-上层传输层"><a href="#5-4-Upper-transport-layer-上层传输层" class="headerlink" title="5.4 Upper transport layer(上层传输层)"></a>5.4 Upper transport layer(上层传输层)</h2><p>对于来自访问层的消息，使用 <strong>AppKey</strong> 执行消息的加密和认证。 这允许上层传输层验证来自网络层的消息。</p>
+<p>上层传输层内部生成的传输控制消息仅在网络层进行加密和验证。</p>
+<h2 id="5-5-Lower-transport-layer-下层传输层"><a href="#5-5-Lower-transport-layer-下层传输层" class="headerlink" title="5.5 Lower transport layer(下层传输层)"></a>5.5 Lower transport layer(下层传输层)</h2><p>在需要时，下层传输层处理 PDU 的分段和重组。</p>
+<p><img src="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220820104739167.png" srcset="/img/loading.gif" lazyload alt="分包与重组示例"></p>
+<h2 id="5-6-Network-layer-网络层"><a href="#5-6-Network-layer-网络层" class="headerlink" title="5.6 Network layer(网络层)"></a>5.6 Network layer(网络层)</h2><p>网络层采用 <strong>NetKey</strong> 加密和解密数据，节点消息的转发也由网络层实现，网络消息缓存机制也在网络层实现。</p>
+<p><img src="https://bucket-220516.oss-cn-hangzhou.aliyuncs.com/img/image-20220820104551095.png" srcset="/img/loading.gif" lazyload alt="网络层PDU格式"></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AE/">通信协议</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E7%89%A9%E8%81%94%E7%BD%91/">物联网</a>
+                    
+                      <a class="hover-with-bg" href="/tags/sigmesh/">sigmesh</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/04/09/ucosiii/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">μC/OS-III(基础篇)</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/06/25/faq_fread_windows/">
+                        <span class="hidden-mobile">技术问题库</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"doXlTUXa3ckdgPm83t05Mr2a-9Nh9j0Va","appKey":"uC3SqctUUSnCfwqxOPtlzodI","path":"window.location.pathname","placeholder":"亲，说两句再走吧~~","avatar":"retro","meta":["nick","mail"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":true,"enable":true,"shortname":"fluid"},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          Fluid.plugins.initFancyBox('#valine .vcontent img:not(.vemoji)');
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        loader: {
+          load: ['ui/lazy']
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?3d4c9f7db2932e5518c123f34db80bba";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
